@@ -18,7 +18,7 @@ const getProductById = asyncHandler(async (req, res) => {
     res.json(product);
   } else {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Không tìm thấy sản phẩm');
   }
 });
 
@@ -42,7 +42,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
   if (!name || !price || !brand || !type) {
     res.status(400);
-    throw new Error('Name, price, brand and type are required');
+    throw new Error('Tên, giá, thương hiệu và loại là bắt buộc');
   }
 
   const product = new Product({
@@ -86,7 +86,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.json(updatedProduct);
   } else {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Không tìm thấy sản phẩm');
   }
 });
 
@@ -98,10 +98,10 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   if (product) {
     await product.remove();
-    res.json({ message: 'Product removed' });
+    res.json({ message: 'Xóa sản phẩm thành công' });
   } else {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Không tìm thấy sản phẩm');
   }
 });
 

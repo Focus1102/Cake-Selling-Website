@@ -3,7 +3,7 @@
     <div class="sidebar-header">
       <div class="logo">
         <img :src="require('@/assets/LOGO.jpg')" alt="Logo" class="logo-img">
-        <span class="logo-text">My Shop</span>
+        <span class="logo-text">Cái Lò Nướng</span>
       </div>
       <div class="profile">
         <div class="profile-info">

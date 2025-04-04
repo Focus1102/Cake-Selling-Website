@@ -257,7 +257,7 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     // Trong môi trường phát triển, sử dụng thông tin đăng nhập cứng
-    if (username === "admin" && password === "admin123") {
+    if (username === "admin" && password === "hoainam123") {
       // Tạo token với thông tin admin
       const token = jwt.sign(
         { userId: "admin-user", role: "admin" },

@@ -1,42 +1,31 @@
 <template>
   <div class="page-container">
-    <div class="header-section">
-      <h1>Giới Thiệu</h1>
-      <p>
-        Chào mừng bạn đến với <strong>tiệm bánh kem</strong> của chúng tôi!
-        Chúng tôi tự hào mang đến những chiếc bánh kem thơm ngon, tinh tế và
-        đầy nghệ thuật, giúp bạn tạo nên những khoảnh khắc đáng nhớ.
-      </p>
-    </div>
-
     <div class="content-grid">
       <div class="content-card vision">
-        <h2>Tầm Nhìn & Sứ Mệnh</h2>
+        <h2>Giới thiệu "Cái lò nướng"</h2>
         <p>
-          Tầm nhìn của chúng tôi là trở thành thương hiệu bánh kem
-          <em>hàng đầu</em>
-          với chất lượng vượt trội và mẫu mã đa dạng, phù hợp với mọi dịp đặc biệt.
-          Sứ mệnh của chúng tôi là mang đến cho khách hàng những chiếc bánh
-          <strong>đẹp mắt</strong> và <strong>thơm ngon</strong>, giúp bạn thể hiện tình cảm và niềm vui trọn vẹn.
+        Chào mừng bạn đến với tiệm bánh kem <strong>"Cái lò nướng"</strong> của chúng tôi! Chúng tôi tự hào mang đến những chiếc bánh kem thơm ngon, tinh tế và đầy nghệ thuật, giúp bạn tạo nên những khoảnh khắc đáng nhớ. 
+        Mỗi chiếc bánh không chỉ là một món ăn, mà còn là một tác phẩm nghệ thuật được tạo nên từ tâm huyết và sự sáng tạo. Chúng tôi cam kết mang đến những trải nghiệm tuyệt vời nhất cho khách hàng,
+        từ hương vị thơm ngon đến hình thức tinh tế, đáp ứng mọi dịp quan trọng trong cuộc sống của bạn.
         </p>
       </div>
 
       <div class="content-card team">
-        <h2>Đội Ngũ Của Chúng Tôi</h2>
+        <h2>Đội ngũ của chúng tôi</h2>
         <p>
-          Chúng tôi có đội ngũ thợ làm bánh chuyên nghiệp, sáng tạo và đam mê.
-          Họ không ngừng nghiên cứu công thức mới để mang đến cho khách hàng những chiếc bánh
-          không chỉ ngon mà còn mang giá trị nghệ thuật.
+        Chúng tôi có đội ngũ thợ làm bánh chuyên nghiệp, sáng tạo và đam mê. Họ không ngừng nghiên cứu công thức mới để mang đến cho khách hàng những chiếc bánh không chỉ ngon mà còn mang giá trị nghệ thuật.
+        Mỗi chiếc bánh là kết quả của sự cẩn thận, tinh tế và tận tâm, được tạo ra bởi những bàn tay lành nghề với mong muốn mang đến sự hài lòng tuyệt đối cho khách hàng. 
+        Sự sáng tạo không ngừng của chúng tôi giúp tiệm bánh luôn đổi mới, mang đến những hương vị độc đáo và hình thức đẹp mắt, phù hợp với xu hướng hiện đại.
         </p>
       </div>
 
       <div class="content-card values">
-        <h2>Giá Trị Cốt Lõi</h2>
+        <h2>Giá trị cốt lõi</h2>
         <ul class="values-list">
-          <li><strong>Chất Lượng Hàng Đầu</strong> - Sử dụng nguyên liệu tươi ngon, an toàn và đảm bảo vệ sinh</li>
-          <li><strong>Khách Hàng Là Trọng Tâm</strong> - Lắng nghe và đáp ứng nhu cầu khách hàng</li>
-          <li><strong>Đổi Mới Sáng Tạo</strong> - Cập nhật xu hướng và sáng tạo mẫu bánh độc đáo</li>
-          <li><strong>Trách Nhiệm Xã Hội</strong> - Sử dụng nguyên liệu thân thiện môi trường</li>
+          <li><strong>Chất Lượng Hàng Đầu</strong>: Sử dụng nguyên liệu tươi ngon, an toàn và đảm bảo vệ sinh</li>
+          <li><strong>Khách Hàng Là Trọng Tâm</strong>: Lắng nghe và đáp ứng nhu cầu khách hàng</li>
+          <li><strong>Đổi Mới Sáng Tạo</strong>: Cập nhật xu hướng và sáng tạo mẫu bánh độc đáo</li>
+          <li><strong>Trách Nhiệm Xã Hội</strong>: Sử dụng nguyên liệu thân thiện môi trường</li>
         </ul>
       </div>
     </div>
@@ -52,7 +41,7 @@ export default {
 
 <style scoped>
 .page-container {
-  max-width: 1000px;
+  max-width: auto;
   margin: 0 auto;
   padding: 30px;
   background-color: #faf7f2;
@@ -62,7 +51,7 @@ export default {
 
 .header-section {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e6e0d4;
 }
@@ -70,14 +59,16 @@ export default {
 h1 {
   font-size: 2.2em;
   color: #5a3921;
-  margin-bottom: 15px;
+  margin-bottom: auto;
   font-weight: 700;
 }
 
 h2 {
   font-size: 1.5em;
+  margin-top: 40px;
   margin-bottom: 12px;
   font-weight: 600;
+  text-align: center;
 }
 
 p {

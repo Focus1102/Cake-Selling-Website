@@ -3,7 +3,7 @@
     <div class="footer-container">
       <div class="footer-section logo-section">
         <img
-          :src="require('@/assets/LOGO.jpg')"
+          :src="require('@/assets/logo.png')"
           alt="Logo"
           class="footer-logo"
         />
@@ -96,7 +96,7 @@ export default {
 
 <style scoped>
 .main-footer {
-  background: linear-gradient(to right, #1a1a2e, #16213e, #0f3460);
+  background: linear-gradient(to right, #11a442, #1dae5c, #21b521);
   color: #ffffff;
   padding: 20px 20px;
 }
@@ -116,8 +116,8 @@ export default {
 }
 
 .footer-logo {
-  height: 100px;
-  margin-bottom: 20px;
+  height: 170px;
+  margin-bottom: 30px;
   border-radius: 50px;
 }
 

@@ -9,7 +9,7 @@
       <h3>Sản phẩm bạn đã thanh toán:</h3>
       <ul class="purchased-items">
         <li v-for="item in purchasedItems" :key="item._id">
-          {{ item.name }} - Màu: {{ item.color }} - Kích thước:
+          {{ item.name }} - Kích thước:
           {{ item.size }} - Số lượng: {{ item.quantity }} - Giá:
           {{ formatPrice(item.price * item.quantity) }}
         </li>
@@ -25,7 +25,7 @@
       <h2>Thông tin thanh toán</h2>
       <ul class="cart-items">
         <li v-for="item in selectedItems" :key="item._id">
-          {{ item.name }} - Màu: {{ item.color }} - Kích thước:
+          {{ item.name }} - Kích thước:
           {{ item.size }} - Số lượng: {{ item.quantity }} - Giá:
           {{ formatPrice(item.price * item.quantity) }}
         </li>
@@ -165,7 +165,6 @@ export default {
         return {
           productId: productId,
           name: item.name,
-          color: item.color || "N/A",
           size: item.size || "N/A",
           quantity: item.quantity,
           price: item.price,

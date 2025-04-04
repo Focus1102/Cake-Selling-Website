@@ -31,17 +31,12 @@ export default {
         {
           title: "Tin tức 1",
           content: "Nội dung của tin tức 1",
-          date: "2023-11-15",
+          date: "2025-04-01",
         },
         {
           title: "Tin tức 2",
           content: "Nội dung của tin tức 2",
-          date: "2023-11-14",
-        },
-        {
-          title: "Tin tức 3",
-          content: "Nội dung của tin tức 3",
-          date: "2023-11-13",
+          date: "2025-04-01",
         },
       ],
     };
@@ -67,7 +62,8 @@ export default {
 
 h1 {
   font-size: 2.5em;
-  margin-bottom: 20px;
+  margin-top: 50px;
+  margin-bottom: 10px;
   color: #2c3e50;
 }
 

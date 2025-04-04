@@ -1,10 +1,6 @@
 <template>
   <div class="page-container">
     <h1>Liên Hệ</h1>
-    <p>
-      Đây là trang liên hệ của chúng tôi. Bạn có thể liên lạc qua email hoặc
-      điện thoại theo thông tin bên dưới.
-    </p>
     <ul class="contact-info">
       <li><strong>Email:</strong> nam.vuphanhoai@gmail.com</li>
       <li><strong>Điện thoại:</strong> 0985518643</li>
@@ -133,7 +129,8 @@ export default {
 h1 {
   font-size: 2.5em;
   margin-bottom: 20px;
-  color: #2c3e50;
+  margin-top: 60;
+  color: #12b761;
 }
 
 p {
@@ -156,14 +153,14 @@ p {
 }
 
 .contact-form {
-  margin-top: 40px;
+  margin-top: 30px;
   text-align: left;
 }
 
 .contact-form h2 {
   text-align: center;
   font-size: 2em;
-  color: #3498db;
+  color: #12b761;
   margin-bottom: 20px;
 }
 
@@ -215,7 +212,7 @@ textarea {
 }
 
 .btn-submit {
-  background-color: #3498db;
+  background-color: #12b761;
 }
 
 .btn-submit:hover:not(:disabled) {

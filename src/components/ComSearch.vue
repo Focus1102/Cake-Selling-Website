@@ -16,13 +16,12 @@
           @change="searchProducts"
           class="filter-select"
         >
-          <option value="">Tất cả loại sản phẩm</option>
-          <option value="ban">Bàn</option>
-          <option value="ghe">Ghế</option>
-          <option value="tu">Tủ</option>
-          <option value="sofa">Sofa</option>
-          <option value="ke">Kệ</option>
-          <option value="giuong">Giường</option>
+        <option value="">Tất Cả Loại Bánh Kem</option>
+          <option value="cake">Sweetbox</option>
+          <option value="banhmouse">Bánh Mouse</option>
+          <option value="banhkembap">Bánh Kem Bắp</option>
+          <option value="banhentremet">Bánh Entremet</option>
+          <option value="banhflangato">Bánh Flan Gato</option>         
         </select>
         <select
           v-model="priceRange"
@@ -30,10 +29,9 @@
           class="filter-select"
         >
           <option value="">Tất cả giá</option>
-          <option value="0-1000000">Dưới 1.000.000 VND</option>
-          <option value="1000000-5000000">1.000.000 - 5.000.000 VND</option>
-          <option value="5000000-10000000">5.000.000 - 10.000.000 VND</option>
-          <option value="10000000-">Trên 10.000.000 VND</option>
+          <option value="0-200000">Dưới 200.000 VNĐ</option>
+          <option value="200000-500000">200.000 - 500.000 VNĐ</option>
+          <option value="500000-1000000">500.000 - 1000.000 VNĐ</option>
         </select>
       </div>
     </div>
@@ -138,7 +136,7 @@ export default {
 <style scoped>
 .search-page {
   max-width: 1200px;
-  margin: 40px auto;
+  margin-top: 50px ;
   padding: 20px;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="payment-history">
-    <h1 class="title">Lịch sử Thanh Toán</h1>
+    <h1 class="title">Lịch Sử Thanh Toán</h1>
 
     <!-- Nếu người dùng chưa đăng nhập -->
     <div v-if="!isAuthenticated" class="login-required">
@@ -34,7 +34,7 @@
           <td>
             <ul class="product-list">
               <li v-for="(item, itemIndex) in order.items" :key="itemIndex">
-                {{ item.name }} - Màu: {{ item.color }} - Kích thước:
+                {{ item.name }} - Kích thước:
                 {{ item.size }} - SL: {{ item.quantity }}
               </li>
             </ul>

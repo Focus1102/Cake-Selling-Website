@@ -2,12 +2,12 @@
   <div class="home">
     <!-- Phần giới thiệu -->
     <div class="explore-section">
-      <h2 class="explore-title">
+      <!-- <h2 class="explore-title">
         Khám phá những sản phẩm Bánh Kem mới nhất với ưu đãi đặc biệt
-      </h2>
-      <button class="explore-btn" @click="$router.push('/sanpham')">
+      </h2> -->
+      <!-- <button class="explore-btn" @click="$router.push('/sanpham')">
         Khám Phá Ngay
-      </button>
+      </button> -->
     </div>
 
     <!-- Swiper Carousel (banner) -->
@@ -61,9 +61,7 @@
     <div class="featured-section" v-if="newProducts.length">
       <div class="featured-header">
         <h3 class="featured-title">Sản phẩm mới</h3>
-        <router-link to="/sanpham" class="view-all-link"
-          >Xem tất cả &gt;</router-link
-        >
+        <router-link to="/sanpham" class="view-all-link">Xem tất cả &gt;</router-link>
       </div>
 
       <div class="featured-list">
@@ -117,8 +115,8 @@ export default {
       modulesForSwiper: [Autoplay, Navigation, Pagination],
       slides: [
         { src: require("@/assets/banner4.png"), alt: "Slide 1" },
-        { src: require("@/assets/banner5.jpg"), alt: "Slide 2" },
-        { src: require("@/assets/banner3.jpg"), alt: "Slide 3" },
+        // { src: require("@/assets/banner5.jpg"), alt: "Slide 2" },
+        // { src: require("@/assets/banner3.jpg"), alt: "Slide 3" },
       ],
       loading: true,
       error: null,
@@ -182,15 +180,15 @@ export default {
 
 .explore-section {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
-.explore-title {
-  font-size: 2.5em;
+/* .explore-title {
+  font-size: 2em;
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
-}
+} */
 
 .explore-btn {
   padding: 12px 24px;
@@ -214,7 +212,7 @@ export default {
 /* Swiper carousel styles */
 .carousel-container {
   width: 100%;
-  height: 70vh;
+  height: 80vh;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -223,7 +221,6 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
 }
 .carousel-container .swiper-pagination {
   position: absolute;

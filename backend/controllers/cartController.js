@@ -10,6 +10,43 @@ exports.getCart = asyncHandler(async (req, res) => {
   res.status(200).json(cart);
 });
 
+exports.addToCart = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { variantId, quantity, productId, name, size, price, image } = req.body;
+
+  if (!productId || !variantId || !name || !price || quantity <= 0) {
+    res.status(400);
+    throw new Error("Dữ liệu không hợp lệ");
+  }
+
+  let cart = await Cart.findOne({ userId });
+  if (!cart) {
+    cart = await Cart.create({ userId, items: [] });
+  }
+
+  const itemIndex = cart.items.findIndex(
+    (item) => item.variantId === variantId
+  );
+
+  if (itemIndex > -1) {
+    cart.items[itemIndex].quantity += quantity;
+  } else {
+    cart.items.push({
+      variantId,
+      productId,
+      name,
+      size,
+      quantity,
+      price,
+      image,
+    });
+  }
+
+  cart.updatedAt = Date.now();
+  await cart.save();
+  res.status(200).json(cart);
+});
+
 exports.updateCart = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const { variantId, quantity, productId, name, size, price, image } =

@@ -62,11 +62,11 @@
                   alt="Product Image"
                   class="product-image"
                 />
-                <span
+                <!-- <span
                   v-if="getMaxQuantity(item) <= 0"
                   class="out-of-stock-badge"
                   >HẾT HÀNG</span
-                >
+                > -->
               </div>
             </td>
             <td class="align-middle product-details">
@@ -74,10 +74,10 @@
               <p class="product-options">
                Kích thước:{{ item.size || "N/A" }}
               </p>
-              <p class="stock-info" v-if="getMaxQuantity(item) > 0">
+              <!-- <p class="stock-info" v-if="getMaxQuantity(item) > 0">
                 Còn lại: {{ getMaxQuantity(item) }} sản phẩm
-              </p>
-              <p class="out-of-stock" v-else>Hết hàng</p>
+              </p> -->
+              <!-- <p class="out-of-stock" v-else>Hết hàng</p> -->
             </td>
             <td class="align-middle">
               {{ formatPrice(item.price) }}
@@ -466,8 +466,8 @@ export default {
 .cart-title {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
   text-align: left;
+  margin-top: 50px;
 }
 
 .cart-table {
@@ -506,7 +506,7 @@ export default {
   border-radius: 8px;
 }
 
-.out-of-stock-badge {
+/* .out-of-stock-badge {
   position: absolute;
   top: 0;
   right: 0;
@@ -517,7 +517,7 @@ export default {
   padding: 3px 6px;
   border-radius: 3px;
   transform: translate(5px, -5px);
-}
+} */
 
 .product-details {
   text-align: left;
@@ -539,12 +539,12 @@ export default {
   margin-top: 5px;
 }
 
-.out-of-stock {
+/* .out-of-stock {
   color: #f44336;
   font-size: 13px;
   font-weight: bold;
   margin-top: 5px;
-}
+} */
 
 .quantity-wrapper {
   display: flex;

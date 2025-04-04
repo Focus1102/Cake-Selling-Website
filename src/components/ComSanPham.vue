@@ -306,7 +306,7 @@ export default {
 
 .product-title {
   font-size: 32px;
-  margin-bottom: 20px;
+  margin-top: 40px;
   color: #333;
 }
 

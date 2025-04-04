@@ -10,6 +10,7 @@ router.post("/login", userController.loginUser);
 router.get("/me", authenticateToken, userController.getCurrentUser);
 
 router.get("/cart", authenticateToken, cartController.getCart);
+router.post("/cart", authenticateToken, cartController.addToCart);
 router.put("/cart", authenticateToken, cartController.updateCart);
 router.delete(
   "/cart/:variantId",

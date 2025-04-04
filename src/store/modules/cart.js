@@ -3,6 +3,8 @@ import axios from "axios";
 
 const state = () => ({
   cartItems: [],
+  loading: false,
+  error: null
 });
 
 const mutations = {
@@ -12,51 +14,67 @@ const mutations = {
   CLEAR_CART(state) {
     state.cartItems = [];
   },
+  SET_LOADING(state, loading) {
+    state.loading = loading;
+  },
+  SET_ERROR(state, error) {
+    state.error = error;
+  }
 };
 
 const actions = {
   async fetchCart({ commit, rootGetters, dispatch }) {
-    const currentUser = rootGetters["auth/currentUser"];
-    if (!currentUser) {
-      console.warn("User not authenticated. Cannot fetch cart.");
+    console.log("Bắt đầu lấy thông tin giỏ hàng");
+    commit("SET_LOADING", true);
+    commit("SET_ERROR", null);
+
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    const isAuthenticated = rootGetters["auth/isAuthenticated"];
+    if (!isAuthenticated) {
+      console.warn("Người dùng chưa đăng nhập. Không thể lấy giỏ hàng.");
       commit("SET_CART_ITEMS", []);
+      commit("SET_LOADING", false);
       return;
     }
 
-    const token = localStorage.getItem("token");
+    // Kiểm tra token
+    const token = rootGetters["auth/token"] || localStorage.getItem("token");
     if (!token) {
-      console.warn("No token found. Cannot fetch cart.");
+      console.warn("Không tìm thấy token. Không thể lấy giỏ hàng.");
       commit("SET_CART_ITEMS", []);
+      commit("SET_LOADING", false);
       return;
     }
 
     try {
-      const response = await axios.get("http://localhost:5001/api/cart", {
-        headers: { Authorization: `Bearer ${token}` },
+      console.log("Đang gọi API lấy giỏ hàng");
+      const response = await axios.get("http://localhost:5001/users/cart", {
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      if (!response.data || !response.data.success) {
-        console.error("API response error:", response.data);
-        commit("SET_CART_ITEMS", []);
-        return;
-      }
-
-      const cartItems = response.data.data.items || [];
-      console.log("Cart items from API:", cartItems);
-      commit("SET_CART_ITEMS", cartItems);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-
-      if (error.response) {
-        if (error.response.status === 401 || error.response.status === 404) {
-          console.error("Token hết hạn hoặc người dùng không tồn tại. Đang đăng xuất...");
-          await dispatch("auth/logout", null, { root: true });
-        }
-        commit("SET_CART_ITEMS", []);
+      console.log("Phản hồi từ API giỏ hàng:", response.data);
+      
+      // Xử lý dữ liệu giỏ hàng từ phản hồi
+      if (response.data) {
+        // Lấy items từ response
+        const cartItems = response.data.items || [];
+        console.log("Các mục trong giỏ hàng:", cartItems);
+        commit("SET_CART_ITEMS", cartItems);
       } else {
-        console.error("Network error or server không phản hồi:", error.message);
+        console.warn("Không có dữ liệu giỏ hàng trong phản hồi");
         commit("SET_CART_ITEMS", []);
       }
+    } catch (error) {
+      console.error("Lỗi khi lấy giỏ hàng:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      
+      commit("SET_ERROR", "Không thể lấy thông tin giỏ hàng");
+      commit("SET_CART_ITEMS", []);
+    } finally {
+      commit("SET_LOADING", false);
     }
   },
   async addToCart({ dispatch, rootGetters }, product) {
@@ -72,101 +90,74 @@ const actions = {
       return;
     }
 
-    // Đảm bảo productId là chuỗi đơn giản, không phải là đối tượng
-    let productId = product._id || product.id;
-    if (productId && typeof productId === 'object') {
-      productId = productId._id || productId.id || String(productId);
-    }
-    
-    const variantId = `${productId}_${product.color || "N/A"}_${
-      product.size || "N/A"
-    }`;
-    const quantityToAdd =
-      product.quantity && product.quantity > 0 ? product.quantity : 1;
-
-    // Kiểm tra số lượng tồn kho
-    const productInStore = rootGetters["products/getProductById"](productId);
-    if (!productInStore) {
-      throw new Error(`Không tìm thấy thông tin sản phẩm. Vui lòng thử lại sau.`);
-    }
-
-    // Tìm số lượng hiện tại trong giỏ hàng (nếu có)
-    const cartItems = this.state.cart.cartItems;
-    const existingItem = cartItems.find((item) => item.variantId === variantId);
-    const currentQuantity = existingItem ? existingItem.quantity : 0;
-
-    // Tổng số lượng sau khi thêm
-    const totalQuantity = currentQuantity + quantityToAdd;
-
-    if (totalQuantity > productInStore.stock) {
-      // Nếu số lượng vượt quá tồn kho, thêm tối đa có thể
-      const availableToAdd = Math.max(0, productInStore.stock - currentQuantity);
-      
-      if (availableToAdd <= 0) {
-        throw new Error(
-          `Không thể thêm vào giỏ hàng. Bạn đã có ${currentQuantity} sản phẩm "${productInStore.name}" trong giỏ hàng (tối đa ${productInStore.stock}).`
-        );
+    try {
+      // Đảm bảo productId là chuỗi đơn giản, không phải là đối tượng
+      let productId = product._id || product.id;
+      if (productId && typeof productId === 'object') {
+        productId = productId._id || productId.id || String(productId);
       }
       
-      // Tự động điều chỉnh số lượng thêm vào tối đa có thể
-      const adjustedQuantity = currentQuantity + availableToAdd;
+      // Tạo variantId từ productId và các thuộc tính khác
+      const variantId = `${productId}_${product.color || "N/A"}_${
+        product.size || "N/A"
+      }`;
+      const quantityToAdd =
+        product.quantity && product.quantity > 0 ? product.quantity : 1;
+
+      console.log("Thêm sản phẩm vào giỏ hàng:", {
+        productId,
+        variantId,
+        name: product.name,
+        quantity: quantityToAdd,
+        price: product.price,
+        size: product.size || "N/A"
+      });
+
+      // Kiểm tra và log token trước khi gửi
+      console.log("Token được sử dụng:", token ? "Có (độ dài: " + token.length + ")" : "Không có");
       
-      try {
-        await axios.post(
-          "http://localhost:5001/api/cart/add",
-          {
-            variantId,
-            productId,
-            name: product.name,
-            size: product.size || "N/A",
-            quantity: adjustedQuantity,
-            price: product.price,
-            image: product.image,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        await dispatch("fetchCart");
-        
-        // Thông báo đã điều chỉnh số lượng - chỉ hiển thị thông báo đặc biệt khi số lượng bị điều chỉnh
-        alert(`Đã thêm ${availableToAdd} sản phẩm vào giỏ hàng. Không thể thêm thêm vì sản phẩm "${productInStore.name}" chỉ còn ${productInStore.stock} sản phẩm trong kho.`);
-        
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-        if (error.response && error.response.status === 401) {
-          console.error("Token hết hạn hoặc không hợp lệ. Đang đăng xuất...");
-          await dispatch("auth/logout", null, { root: true });
-        }
-        throw error;
+      // Đảm bảo header Authorization được thiết lập đúng
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      console.log("Headers gửi đi:", {
+        Authorization: headers.Authorization ? headers.Authorization.substring(0, 15) + "..." : "Không có",
+        'Content-Type': headers['Content-Type']
+      });
+
+      const response = await axios.post(
+        "http://localhost:5001/users/cart",
+        {
+          productId,
+          variantId,
+          name: product.name,
+          size: product.size || "N/A",
+          quantity: quantityToAdd,
+          price: product.price,
+          image: product.image || (product.images && product.images[0])
+        },
+        { headers }
+      );
+
+      console.log("Kết quả thêm vào giỏ hàng:", response.data);
+      
+      // Cập nhật lại giỏ hàng sau khi thêm
+      await dispatch("fetchCart");
+      return true;
+    } catch (error) {
+      console.error("Chi tiết lỗi khi thêm vào giỏ hàng:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      
+      if (error.response && error.response.status === 401) {
+        console.error("Token hết hạn hoặc không hợp lệ. Đang đăng xuất...");
+        await dispatch("auth/logout", null, { root: true });
       }
-    } else {
-      // Trường hợp bình thường, đủ tồn kho
-      try {
-        await axios.post(
-          "http://localhost:5001/api/cart/add",
-          {
-            variantId,
-            productId,
-            name: product.name,
-            size: product.size || "N/A",
-            quantity: totalQuantity,
-            price: product.price,
-            image: product.image,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        await dispatch("fetchCart");
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-        if (error.response && error.response.status === 401) {
-          console.error("Token hết hạn hoặc không hợp lệ. Đang đăng xuất...");
-          await dispatch("auth/logout", null, { root: true });
-        }
-        throw error;
-      }
+      throw error;
     }
   },
   async removeFromCart({ commit, dispatch, rootGetters }, variantId) {
@@ -192,17 +183,13 @@ const actions = {
         return false;
       }
       
-      // Lấy productId từ item để gửi cho API
-      const productId = cartItem.productId;
-      console.log(`ProductId của sản phẩm cần xóa: ${productId}`);
-      
       // Immediately remove the item from the current state for fast UI response
       const currentItems = [...this.state.cart.cartItems];
       const updatedItems = currentItems.filter(item => item.variantId !== variantId);
       commit('SET_CART_ITEMS', updatedItems);
       
-      // Gọi API để xóa sản phẩm (backend sử dụng productId)
-      const response = await axios.delete(`http://localhost:5001/api/cart/remove/${productId}`, {
+      // Gọi API để xóa sản phẩm - dùng đúng endpoint
+      const response = await axios.delete(`http://localhost:5001/users/cart/${variantId}`, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -216,23 +203,6 @@ const actions = {
       return true;
     } catch (error) {
       console.error("Chi tiết lỗi khi xóa sản phẩm:", error);
-      
-      if (error.response) {
-        console.error("Mã lỗi:", error.response.status);
-        console.error("Dữ liệu phản hồi:", error.response.data);
-        
-        if (error.response.status === 401) {
-          console.error("Token hết hạn hoặc không hợp lệ. Đang đăng xuất...");
-          await dispatch("auth/logout", null, { root: true });
-        } else if (error.response.status === 404) {
-          console.error("Không tìm thấy endpoint hoặc sản phẩm. Kiểm tra lại API URL.");
-        }
-      } else if (error.request) {
-        console.error("Không nhận được phản hồi từ server:", error.request);
-      } else {
-        console.error("Lỗi cấu hình request:", error.message);
-      }
-      
       // Restore original cart state if API call fails
       await dispatch("fetchCart");
       throw error;
@@ -266,17 +236,10 @@ const actions = {
       productId = productId._id || productId.id || String(productId);
     }
 
-    // Kiểm tra số lượng tồn kho
-    const product = rootGetters["products/getProductById"](productId);
-    if (product && quantity > product.stock) {
-      throw new Error(
-        `Không thể tăng thêm vì sản phẩm "${product.name}" chỉ còn ${product.stock} sản phẩm trong kho.`
-      );
-    }
-
     try {
+      // Sử dụng endpoint đúng
       await axios.put(
-        "http://localhost:5001/api/cart/update",
+        "http://localhost:5001/users/cart",
         {
           variantId,
           productId,
@@ -299,36 +262,38 @@ const actions = {
         console.error("Token hết hạn hoặc không hợp lệ. Đang đăng xuất...");
         await dispatch("auth/logout", null, { root: true });
       }
-      throw error; // Ném lỗi để component có thể xử lý
+      throw error;
     }
   },
-  async clearCart({ dispatch, rootGetters }) {
+  async clearCart({ dispatch, rootGetters, commit }) {
     const currentUser = rootGetters["auth/currentUser"];
     if (!currentUser) {
-      console.warn("User not authenticated. Cannot clear cart.");
+      console.warn("Người dùng chưa đăng nhập. Không thể xóa giỏ hàng.");
+      commit("CLEAR_CART");  // Vẫn xóa giỏ hàng ở local
       return;
     }
 
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("No token found. Cannot clear cart.");
+      console.error("Không tìm thấy token. Không thể xóa giỏ hàng trên server.");
+      commit("CLEAR_CART");  // Vẫn xóa giỏ hàng ở local
       return;
     }
 
     try {
-      await axios.delete("http://localhost:5001/api/cart/clear", {
+      // Sử dụng endpoint đúng
+      await axios.delete("http://localhost:5001/users/cart", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      await dispatch("fetchCart");
+      commit("CLEAR_CART");
     } catch (error) {
+      console.error("Lỗi khi xóa giỏ hàng:", error.message);
+      
+      // Vẫn xóa giỏ hàng ở local dù có lỗi từ server
+      commit("CLEAR_CART");
+      
       if (error.response && error.response.status === 401) {
-        console.error("Token hết hạn, cần đăng nhập lại:", error);
-        await dispatch("auth/logout", null, { root: true });
-      } else if (error.response && error.response.status === 404) {
-        console.warn("Endpoint /users/cart not found. Clearing locally...");
-        await dispatch("fetchCart");
-      } else {
-        console.error("Error clearing cart:", error);
+        console.warn("Token không hợp lệ khi xóa giỏ hàng");
       }
     }
   },

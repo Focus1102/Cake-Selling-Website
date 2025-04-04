@@ -33,21 +33,19 @@
       <!-- Logo -->
       <div class="logo">
         <router-link to="/">
-          <img :src="require('@/assets/LOGO.jpg')" alt="Logo" />
+          <img :src="require('@/assets/logo.png')" alt="Logo" />
         </router-link>
       </div>
 
       <!-- Navigation chính -->
       <nav>
         <ul class="menu">
-          <li><router-link to="/">Trang Chủ</router-link></li>
-          <li><router-link to="/sanpham">Sản phẩm</router-link></li>
-          <li>
-            <router-link to="/lichsuthanhtoan">Lịch sử thanh toán</router-link>
-          </li>
-          <li><router-link to="/gioithieu">Giới Thiệu</router-link></li>
-          <li><router-link to="/lienhe">Liên Hệ</router-link></li>
-          <!-- <li><router-link to="/tintuc">Tin Tức</router-link></li> -->
+          <li><router-link to="/">TRANG CHỦ</router-link></li>
+          <li><router-link to="/sanpham">SẢN PHẨM</router-link></li>
+          <li><router-link to="/gioithieu">GIỚI THIỆU</router-link></li>
+          <li><router-link to="/lienhe">LIÊN HỆ</router-link></li>
+          <!-- <li><router-link to="/tintuc">TIN TỨC</router-link></li> -->
+          <li><router-link to="/lichsuthanhtoan">LỊCH SỬ THANH TOÁN</router-link></li>
         </ul>
       </nav>
 
@@ -99,6 +97,7 @@
       <button class="close-btn" @click="toggleCategoryMenu">×</button>
     </div>
     <ul class="category-menu">
+      <li><router-link to="/sanpham/banhkem">Menu</router-link></li>
       <li><router-link to="/sanpham/cake">Sweetbox</router-link></li>
       <li><router-link to="/sanpham/banhmouse">Bánh Mouse</router-link></li>
       <li><router-link to="/sanpham/banhkembap">Bánh Kem Bắp</router-link></li>
@@ -150,17 +149,17 @@ export default {
   font-weight: bold;
   display: flex;
   align-items: center;
-  color: #32089d;
+  color: #0e9daa;
 }
 .fa-solid {
-  margin-right: 5px;
+  margin-right: 7px;
 }
 
 /* Header cố định */
 .main-header {
-  background: linear-gradient(to right, #eaf1f1, #a0c2e6, #afe3e8);
+  background: linear-gradient(to right, #11a442, #1dae5c, #e4eae4);
   color: #000000;
-  padding: 15px 0;
+  padding: 30px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -169,7 +168,7 @@ export default {
   left: 0;
   width: 100%;
   z-index: 1000;
-  height: 6vh; /* Chiều cao tuỳ ý */
+  height: 6.55vh; /* Chiều cao tuỳ ý */
 }
 
 .header-container {
@@ -220,7 +219,7 @@ nav {
 .menu {
   list-style: none;
   display: flex;
-  gap: 30px;
+  gap: 20px;
   margin: 0;
   padding: 0;
 }
@@ -248,7 +247,7 @@ nav {
   color: #000000;
 }
 .btn-logout {
-  background-color: #fcb034;
+  background-color: #0e9daa;
   color: #ffffff;
   padding: 8px 12px;
   border: none;

@@ -9,7 +9,7 @@ export default {
     error: null,
   }),
   getters: {
-    isAuthenticated: (state) => !!state.token, // Ensure this returns true if token exists
+    isAuthenticated: (state) => !!state.token, // Đảm bảo điều này trả về true nếu token tồn tại
     currentUser: (state) => state.currentUser,
     token: (state) => state.token,
     isLoading: (state) => state.loading,
@@ -41,21 +41,59 @@ export default {
   },
   actions: {
     async login({ commit }, userData) {
-      console.log("Gửi yêu cầu đăng nhập với dữ liệu:", userData); // Log dữ liệu đăng nhập
+      console.log("Bắt đầu quá trình đăng nhập với email:", userData.email);
       commit("SET_LOADING", true);
       commit("SET_ERROR", null);
       try {
         const res = await axios.post("http://localhost:5001/users/login", userData);
+        console.log("Phản hồi từ server:", {
+          success: true,
+          hasToken: !!res.data.token,
+          hasUser: !!res.data.user
+        });
 
         const { token, user } = res.data;
+        console.log("Token nhận được:", token ? `Có (độ dài: ${token.length})` : "Không có");
+        console.log("Thông tin người dùng:", user);
 
-        console.log("Token từ server:", token); // Log token
-        console.log("Thông tin người dùng:", user); // Log thông tin người dùng
+        // Kiểm tra token trước khi lưu
+        if (!token) {
+          throw new Error("Không nhận được token từ server");
+        }
 
+        // Xóa token cũ trước (nếu có)
+        localStorage.removeItem("token");
+        
+        // Thiết lập token cho axios
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        console.log("Đã thiết lập token cho axios");
+
+        // Lưu thông tin vào store và localStorage
+        localStorage.setItem("token", token);
+        console.log("Đã lưu token vào localStorage:", {
+          saved: !!localStorage.getItem("token"),
+          length: localStorage.getItem("token")?.length
+        });
+        
         commit("SET_USER", { user, token });
+        console.log("Đã lưu thông tin người dùng và token vào store");
+
+        // Kiểm tra token ngay sau khi đăng nhập
+        try {
+          const checkRes = await axios.get("http://localhost:5001/users/me", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          console.log("Kiểm tra token thành công:", checkRes.data);
+        } catch (error) {
+          console.error("Lỗi kiểm tra token sau đăng nhập:", error);
+          throw new Error("Token không hợp lệ sau khi đăng nhập");
+        }
       } catch (error) {
-        console.error("Lỗi khi đăng nhập:", error.message); // Log lỗi đăng nhập
+        console.error("Chi tiết lỗi đăng nhập:", {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status
+        });
         const msg =
           (error.response && error.response.data.message) ||
           error.message ||
@@ -68,6 +106,11 @@ export default {
     },
     async logout({ commit, dispatch }) {
       const token = localStorage.getItem("token");
+      console.log("Bắt đầu quá trình đăng xuất:", {
+        hasToken: !!token,
+        currentUser: localStorage.getItem("currentUser") ? "Có" : "Không có"
+      });
+
       if (!token) {
         console.warn("Không tìm thấy token. Không cần thực hiện logout.");
         return;
@@ -75,35 +118,48 @@ export default {
 
       // Xóa token mặc định từ axios
       delete axios.defaults.headers.common["Authorization"];
+      console.log("Đã xóa token khỏi axios headers");
       
       commit("LOGOUT");
-      console.log("Đã xóa token và thông tin người dùng khỏi localStorage.");
+      console.log("Đã xóa token và thông tin người dùng khỏi localStorage");
 
       // Xóa giỏ hàng trong trạng thái Vuex
       await dispatch("cart/clearCart", null, { root: true });
       await dispatch("paymentHistory/fetchPaymentHistory", null, {
         root: true,
       });
+      console.log("Đã xóa giỏ hàng và lịch sử thanh toán");
     },
     
-    // Kiểm tra token hiện tại có hợp lệ không
     async checkAuth({ state, commit }) {
       const token = state.token || localStorage.getItem("token");
-      console.log("Kiểm tra token:", token); // Log token hiện tại
+      console.log("Kiểm tra token hiện tại:", {
+        hasToken: !!token,
+        source: state.token ? "state" : "localStorage"
+      });
+
       if (!token) {
-        console.warn("Không tìm thấy token trong localStorage hoặc state."); // Log cảnh báo
+        console.warn("Không tìm thấy token trong localStorage hoặc state.");
         return false;
       }
     
       try {
+        console.log("Đang gọi API kiểm tra token...");
         const res = await axios.get("http://localhost:5001/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Thông tin người dùng từ API /users/me:", res.data.user); // Log thông tin người dùng
+        console.log("Kết quả kiểm tra token:", {
+          success: true,
+          user: res.data.user
+        });
         commit("SET_USER", { user: res.data.user, token });
         return true;
       } catch (error) {
-        console.error("Lỗi khi kiểm tra token:", error.message); // Log lỗi
+        console.error("Chi tiết lỗi kiểm tra token:", {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data
+        });
         if (error.response) {
           if (error.response.status === 401 || error.response.status === 404) {
             console.warn("Token không hợp lệ hoặc người dùng không tồn tại. Đang thực hiện logout...");
